@@ -7,6 +7,7 @@ from rest_framework.authentication import TokenAuthentication
 
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 from . import serializers
 from . import models
@@ -125,3 +126,22 @@ class LoginViewSet(viewsets.ViewSet):
         and send in the request"""
 
         return ObtainAuthToken().post(request)
+
+
+class UserProfileFeedViewSet(viewsets.ModelViewSet):
+    """Handles creating, reading and updating profile feed items."""
+
+    authentication_classes = (TokenAuthentication,)
+    serializer_class = serializers.ProfileFeedItemSerializer
+    queryset = models.ProfileFeedItem.objects.all()
+    """permissions.PostOwnStatus -- you can't edit someone else's status text
+       IsAuthenticatedOrReadOnly -- if authenticated then only you can edit
+    """
+    permission_classes = (permissions.PostOwnStatus, IsAuthenticated)
+
+    def perform_create(self, serializer):
+        """we want to customize the logic that is run when we create a
+        new object. so, as and when a new obj is created, we set the
+        user_profile field to the logged in user."""
+
+        serializer.save(user_profile=self.request.user)
