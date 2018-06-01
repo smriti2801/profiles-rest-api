@@ -5,6 +5,9 @@ from rest_framework import viewsets, status, filters
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.authtoken.views import ObtainAuthToken
+
 from . import serializers
 from . import models
 from . import permissions
@@ -106,3 +109,19 @@ class UserProfileViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.UpdateOwnProfile,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'email',)
+
+
+class LoginViewSet(viewsets.ViewSet):
+    """Checks email and password and returns an auth token."""
+
+    serializer_class = AuthTokenSerializer
+
+    def create(self, request):
+        """So, DRF has an APIView for login. we create this viewset class
+        and will use this apiview and convert it to a viewsetself.
+        so, we are using this ObtainAuthToken APIView to validate
+        and create a token. we call the ObtainAuthToken apiview and
+        and call it's post method (bcoz remember post in apiview == create in viewsets)
+        and send in the request"""
+
+        return ObtainAuthToken().post(request)
