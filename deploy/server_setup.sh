@@ -21,9 +21,9 @@ mkdir -p $PROJECT_BASE_PATH
 git clone $PROJECT_GIT_URL $PROJECT_BASE_PATH/profiles-rest-api
 
 mkdir -p $VIRTUALENV_BASE_PATH
-virtualenv --python=python2.7 $VIRTUALENV_BASE_PATH/api
+virtualenv --python=python3.5 $VIRTUALENV_BASE_PATH/profiles_api
 
-source $VIRTUALENV_BASE_PATH/api/bin/activate
+source $VIRTUALENV_BASE_PATH/profiles_api/bin/activate
 pip install -r $PROJECT_BASE_PATH/profiles-rest-api/requirements.txt
 
 # Run migrations
